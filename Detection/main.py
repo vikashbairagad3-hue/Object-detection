@@ -5,9 +5,9 @@ import argparse
 from datetime import datetime
 from pathlib import Path
 from ultralytics import YOLO
-from utils.tracer import SimpleTracker      
-from utils.analytics import Analytics
-from utils.viz import draw_frame     
+from utils.track import SimpleTracker      
+from utils.analysis import Analytics
+from utils.visualization import draw_frame     
 
 WAREHOUSE_CLASSES = {
     0:  "Person",
