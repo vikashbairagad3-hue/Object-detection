@@ -32,15 +32,21 @@ Real-time detection and tracking system for warehouse surveillance using **YOLOv
 ## 📁 Project Structure
 
 ```
-warehouse_tracker/
-├── main.py                  ← Entry point - run this file
-├── requirements.txt         ← Python dependencies
-├── utils/
-│   ├── __init__.py          ← Empty file (required)
-│   ├── track.py           ← Object tracking (IoU based)
-│   ├── analysis.py         ← Entry/Exit counting
-│   └── visualization.py        ← OpenCV drawing (boxes, labels, HUD)
-└── output/                  ← CSV logs and videos are saved here
+Opencv/
+└── Detection/
+    ├── main.py                  ← Entry point — run this file
+    ├── requirements.txt         ← Python dependencies
+    ├── yolov8n.pt               ← YOLOv8 model weights
+    ├── .gitignore
+    ├── utils/
+    │   ├── __init__.py          ← Empty file (required)
+    │   ├── track.py             ← Object tracking (IoU based)
+    │   ├── analysis.py          ← Entry/Exit counting logic
+    │   └── visualization.py     ← OpenCV drawing (boxes, labels, HUD)
+    └── output/                  ← CSV logs saved here
+        ├── log_20260225_160309.csv
+        ├── log_20260225_163857.csv
+        └── log_20260225_164956.csv
 ```
 
 ---
@@ -119,10 +125,10 @@ python main.py --source rtsp://192.168.1.100:554/stream
 |---|---|---|
 | `--source` | `0` | Webcam index, video file path, or RTSP URL |
 | `--model` | `yolov8n.pt` | YOLOv8 weights file |
-| `--output` | `output` | Output folder for CSV and video |
+| `--output` | `output` | Output folder for CSV logs |
 | `--save` | False | Save the annotated output video |
 
-> **Note:** On first run, YOLOv8 weights are automatically downloaded (~6MB for nano)
+> **Note:** On first run, YOLOv8 weights are automatically downloaded (~6MB for nano). The `yolov8n.pt` file is already included in this project.
 
 **To quit:** Press `Q` or `ESC`
 
@@ -131,7 +137,7 @@ python main.py --source rtsp://192.168.1.100:554/stream
 ## 📤 Output
 
 ### CSV Log
-Saved to `output/log_TIMESTAMP.csv`:
+Saved to `output/log_TIMESTAMP.csv` (e.g. `log_20260225_164956.csv`):
 
 | Column | Example | Description |
 |---|---|---|
@@ -141,7 +147,7 @@ Saved to `output/log_TIMESTAMP.csv`:
 | class | Person | Detected class |
 | x1, y1, x2, y2 | 120,80,240,300 | Bounding box in pixels |
 | confidence | 0.87 | Detection confidence (0–1) |
-| event | ENTRY | Line cross event (ENTRY/EXIT/blank) |
+| event | ENTRY | Line cross event (ENTRY / EXIT / blank) |
 
 ### Terminal Summary
 Displayed when the program exits:
@@ -156,7 +162,7 @@ Displayed when the program exits:
 
 ## 🎯 Detected Classes
 
-The default YOLOv8 COCO model is used. The following proxy classes are mapped for warehouse use:
+The default YOLOv8 COCO model (`yolov8n.pt`) is used. The following proxy classes are mapped for warehouse use:
 
 | Label | COCO Classes Used | Class IDs |
 |---|---|---|
@@ -176,7 +182,7 @@ You can modify the following values at the top of `main.py`:
 ```python
 CONF_THRESHOLD = 0.30   # Detection confidence (lower = more detections, more false positives)
 IOU_THRESHOLD  = 0.45   # NMS threshold
-LINE_POSITION  = 0.5    # Counting line position (0.0=top, 1.0=bottom)
+LINE_POSITION  = 0.5    # Counting line position (0.0 = top, 1.0 = bottom)
 ```
 
 ### Model Size vs Speed (CPU)
@@ -193,12 +199,14 @@ LINE_POSITION  = 0.5    # Counting line position (0.0=top, 1.0=bottom)
 
 | Problem | Solution |
 |---|---|
-| `ModuleNotFoundError: utils.tracker` | File must be named `tracker.py` (not `tracer.py`) |
-| `ModuleNotFoundError: utils.visualizer` | File must be named `visualizer.py` (not `viz.py`) |
+| `ModuleNotFoundError: utils.track` | Ensure `track.py` exists inside the `utils/` folder |
+| `ModuleNotFoundError: utils.visualization` | Ensure `visualization.py` exists inside `utils/` |
+| `ModuleNotFoundError: utils.analysis` | Ensure `analysis.py` exists inside `utils/` |
 | Webcam not opening | Try `--source 1` or `--source 2` |
-| Only Person being detected | Check all class IDs in `WAREHOUSE_CLASSES` |
-| Running very slowly | Use `yolov8n.pt` or resize the input frames |
+| Only Person being detected | Check all class IDs in `WAREHOUSE_CLASSES` inside `main.py` |
+| Running very slowly | Use `yolov8n.pt` or resize input frames |
 | `venv\Scripts\activate` error | Run PowerShell as Administrator |
+| CSV not saving | Make sure the `output/` folder exists or let the script create it automatically |
 
 ---
 
