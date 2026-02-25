@@ -1,6 +1,6 @@
 # 🏭 Warehouse Multi-Object Tracking System
 
-Real-time detection aur tracking system for warehouse surveillance using **YOLOv8 + OpenCV**.
+Real-time detection and tracking system for warehouse surveillance using **YOLOv8 + OpenCV**.
 
 ---
 
@@ -20,12 +20,12 @@ Real-time detection aur tracking system for warehouse surveillance using **YOLOv
 
 ## ✅ Features
 
-- 🔍 **3 Object Classes** detect karta hai — Person, Forklift, Parcel
-- 🆔 **Unique Tracking IDs** — har object ko ek ID milti hai jo frames mein consistent rehti hai
-- 📊 **Live Analytics HUD** — screen pe real-time count dikhata hai
-- ↕️ **Entry / Exit Counting** — virtual counting line cross hone par count karta hai
-- 📝 **CSV Log Export** — har frame ka data CSV file mein save hota hai
-- 🎥 **Video Save** — annotated output video save kar sakte ho
+- 🔍 **3 Object Classes** detected — Person, Forklift, Parcel
+- 🆔 **Unique Tracking IDs** — each object gets a consistent ID across frames
+- 📊 **Live Analytics HUD** — real-time count displayed on screen
+- ↕️ **Entry / Exit Counting** — counts when objects cross the virtual counting line
+- 📝 **CSV Log Export** — per-frame data saved to a CSV file
+- 🎥 **Video Save** — annotated output video can be saved
 
 ---
 
@@ -33,14 +33,14 @@ Real-time detection aur tracking system for warehouse surveillance using **YOLOv
 
 ```
 warehouse_tracker/
-├── main.py                  ← Entry point - yahi chalao
+├── main.py                  ← Entry point - run this file
 ├── requirements.txt         ← Python dependencies
 ├── utils/
 │   ├── __init__.py          ← Empty file (required)
 │   ├── track.py           ← Object tracking (IoU based)
 │   ├── analysis.py         ← Entry/Exit counting
 │   └── visualization.py        ← OpenCV drawing (boxes, labels, HUD)
-└── output/                  ← CSV logs aur video yahan save hote hain
+└── output/                  ← CSV logs and videos are saved here
 ```
 
 ---
@@ -60,7 +60,7 @@ warehouse_tracker/
 
 ## ⚙️ Installation
 
-**Step 1 — Virtual environment banao aur activate karo**
+**Step 1 — Create and activate a virtual environment**
 
 ```bash
 # Windows (PowerShell)
@@ -72,13 +72,13 @@ python -m venv venv
 source venv/bin/activate
 ```
 
-**Step 2 — Dependencies install karo**
+**Step 2 — Install dependencies**
 
 ```bash
 pip install -r requirements.txt
 ```
 
-**Step 3 — Verify karo sab install hua**
+**Step 3 — Verify the installation**
 
 ```bash
 python -c "import ultralytics, cv2, numpy; print('All good!')"
@@ -88,22 +88,22 @@ python -c "import ultralytics, cv2, numpy; print('All good!')"
 
 ## 🚀 Usage
 
-**Webcam se chalao (default)**
+**Run with webcam (default)**
 ```bash
 python main.py --source 0
 ```
 
-**Video file process karo**
+**Process a video file**
 ```bash
 python main.py --source warehouse.mp4
 ```
 
-**Better accuracy model use karo**
+**Use a higher accuracy model**
 ```bash
 python main.py --source 0 --model yolov8s.pt
 ```
 
-**Video save karo**
+**Save the output video**
 ```bash
 python main.py --source warehouse.mp4 --save
 ```
@@ -117,35 +117,34 @@ python main.py --source rtsp://192.168.1.100:554/stream
 
 | Argument | Default | Description |
 |---|---|---|
-| `--source` | `0` | Webcam index, video file path, ya RTSP URL |
+| `--source` | `0` | Webcam index, video file path, or RTSP URL |
 | `--model` | `yolov8n.pt` | YOLOv8 weights file |
-| `--output` | `output` | Output folder for CSV aur video |
-| `--save` | False | Annotated video save karo |
+| `--output` | `output` | Output folder for CSV and video |
+| `--save` | False | Save the annotated output video |
 
-> **Note:** Pehli baar chalane par YOLOv8 weights automatically download hote hain (~6MB for nano)
+> **Note:** On first run, YOLOv8 weights are automatically downloaded (~6MB for nano)
 
-**Quit karne ke liye:** `Q` ya `ESC` press karo
+**To quit:** Press `Q` or `ESC`
 
 ---
 
 ## 📤 Output
 
-
 ### CSV Log
-`output/log_TIMESTAMP.csv` mein save hota hai:
+Saved to `output/log_TIMESTAMP.csv`:
 
 | Column | Example | Description |
 |---|---|---|
 | frame | 142 | Frame number |
-| time | 14:32:05 | Time |
+| time | 14:32:05 | Timestamp |
 | track_id | 3 | Unique object ID |
 | class | Person | Detected class |
-| x1, y1, x2, y2 | 120,80,240,300 | Bounding box pixels |
-| confidence | 0.87 | Detection confidence (0-1) |
+| x1, y1, x2, y2 | 120,80,240,300 | Bounding box in pixels |
+| confidence | 0.87 | Detection confidence (0–1) |
 | event | ENTRY | Line cross event (ENTRY/EXIT/blank) |
 
 ### Terminal Summary
-Program band hone par yeh dikhata hai:
+Displayed when the program exits:
 ```
 =========== FINAL SUMMARY ===========
   Person     | Total:  12 | IN:  8 | OUT:  4
@@ -157,7 +156,7 @@ Program band hone par yeh dikhata hai:
 
 ## 🎯 Detected Classes
 
-YOLOv8 default COCO model use hota hai. Warehouse ke liye yeh proxy classes hain:
+The default YOLOv8 COCO model is used. The following proxy classes are mapped for warehouse use:
 
 | Label | COCO Classes Used | Class IDs |
 |---|---|---|
@@ -165,17 +164,17 @@ YOLOv8 default COCO model use hota hai. Warehouse ke liye yeh proxy classes hain
 | Forklift | truck | 7 |
 | Parcel | handbag, suitcase, bottle, chair, laptop, cell phone, book | 24, 28, 39, 56, 63, 67, 73 |
 
-> **Better Accuracy ke liye:** Custom YOLOv8 model train karo warehouse data pe.
-> Free datasets: [roboflow.com/search?q=warehouse](https://roboflow.com/search?q=warehouse)
+> **For Better Accuracy:** Train a custom YOLOv8 model on warehouse-specific data.  
+> Free datasets available at: [roboflow.com/search?q=warehouse](https://roboflow.com/search?q=warehouse)
 
 ---
 
 ## 🔧 Configuration
 
-`main.py` ke top mein yeh values change kar sakte ho:
+You can modify the following values at the top of `main.py`:
 
 ```python
-CONF_THRESHOLD = 0.30   # Detection confidence (kam karo = zyada detect, zyada false positives)
+CONF_THRESHOLD = 0.30   # Detection confidence (lower = more detections, more false positives)
 IOU_THRESHOLD  = 0.45   # NMS threshold
 LINE_POSITION  = 0.5    # Counting line position (0.0=top, 1.0=bottom)
 ```
@@ -194,18 +193,18 @@ LINE_POSITION  = 0.5    # Counting line position (0.0=top, 1.0=bottom)
 
 | Problem | Solution |
 |---|---|
-| `ModuleNotFoundError: utils.tracker` | File ka naam `tracker.py` hona chahiye (`tracer.py` nahi) |
-| `ModuleNotFoundError: utils.visualizer` | File ka naam `visualizer.py` hona chahiye (`viz.py` nahi) |
-| Webcam nahi khul raha | `--source 1` ya `--source 2` try karo |
-| Sirf Person detect ho raha hai | `WAREHOUSE_CLASSES` mein saare class IDs check karo |
-| Bahut slow chal raha hai | `yolov8n.pt` use karo ya frame resize karo |
-| `venv\Scripts\activate` error | PowerShell mein run karo as Administrator |
+| `ModuleNotFoundError: utils.tracker` | File must be named `tracker.py` (not `tracer.py`) |
+| `ModuleNotFoundError: utils.visualizer` | File must be named `visualizer.py` (not `viz.py`) |
+| Webcam not opening | Try `--source 1` or `--source 2` |
+| Only Person being detected | Check all class IDs in `WAREHOUSE_CLASSES` |
+| Running very slowly | Use `yolov8n.pt` or resize the input frames |
+| `venv\Scripts\activate` error | Run PowerShell as Administrator |
 
 ---
 
 ## 📄 License
 
-This project is for educational and surveillance purposes.
+This project is intended for educational and surveillance purposes.
 
 ---
 
